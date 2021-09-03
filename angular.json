@@ -6,5 +6,68 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-  }
+    "@zanza/state": {
+      "projectType": "library",
+      "root": "projects/zanza/state",
+      "sourceRoot": "projects/zanza/state/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/zanza/state/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/zanza/state/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/zanza/state/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/zanza/state/src/test.ts",
+            "tsConfig": "projects/zanza/state/tsconfig.spec.json",
+            "karmaConfig": "projects/zanza/state/karma.conf.js"
+          }
+        }
+      }
+    },
+    "@zanza/common": {
+      "projectType": "library",
+      "root": "projects/zanza/common",
+      "sourceRoot": "projects/zanza/common/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/zanza/common/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/zanza/common/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/zanza/common/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/zanza/common/src/test.ts",
+            "tsConfig": "projects/zanza/common/tsconfig.spec.json",
+            "karmaConfig": "projects/zanza/common/karma.conf.js"
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "@zanza/state"
 }

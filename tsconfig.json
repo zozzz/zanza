@@ -2,6 +2,16 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths": {
+      "@zanza/common": [
+        "dist/zanza/common/zanza-common",
+        "dist/zanza/common"
+      ],
+      "@zanza/state": [
+        "dist/zanza/state/zanza-state",
+        "dist/zanza/state"
+      ]
+    },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
@@ -16,6 +26,7 @@
     "importHelpers": true,
     "target": "es2017",
     "module": "es2020",
+    "noImplicitOverride": true,
     "lib": [
       "es2018",
       "dom"

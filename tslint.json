@@ -1,0 +1,80 @@
+{
+    "extends": [
+        "tslint:recommended",
+        "tslint-eslint-rules",
+        "tslint-consistent-codestyle",
+        "tslint-config-prettier"
+    ],
+    "rules": {
+        "max-line-length": {
+            "options": [
+                120
+            ]
+        },
+        "quotemark": [
+            true,
+            "double",
+            "avoid-escape"
+        ],
+        "member-access": [
+            true,
+            "no-public"
+        ],
+        "no-unnecessary-type-assertion": true,
+        "prefer-for-of": true,
+        "curly": true,
+        "forin": true,
+        "no-string-literal": false,
+        "no-string-throw": true,
+        "triple-equals": [
+            true,
+            "allow-null-check",
+            "allow-undefined-check"
+        ],
+        "use-isnan": true,
+        "max-classes-per-file": false,
+        "array-type": [
+            true,
+            "array-simple"
+        ],
+        "one-variable-per-declaration": [
+            true,
+            "ignore-for-loop"
+        ],
+        "indent": [
+            true,
+            "spaces",
+            4
+        ],
+        "no-consecutive-blank-lines": [
+            true,
+            2
+        ],
+        "semicolon": [
+            true,
+            "never"
+        ],
+        "no-submodule-imports": false,
+        "no-relative-imports": false,
+        "completed-docs": false,
+        "no-null-keyword": false,
+        "prefer-method-signature": false,
+        "typedef": false,
+        "no-use-before-declare": false,
+        "prefer-const": [
+            true,
+            {
+                "destructuring": "all"
+            }
+        ],
+        "callable-types": false,
+        "no-console": false
+    },
+    "jsRules": {
+        "max-line-length": {
+            "options": [
+                120
+            ]
+        }
+    }
+}
