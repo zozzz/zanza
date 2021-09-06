@@ -81,8 +81,8 @@ export class MemoryLink<T extends Entity = Entity> extends Link {
 
     save<E extends Entity = Entity>(entity: E): Request<E, E> {
         return new MemoryRequest(() => {
-            if (getEntityPk(entity)) {
-                throw new Error("Missing primary key fields")
+            if (!getEntityPk(entity)) {
+                throw new Error("Missing primary key values")
             }
             this.#items.set(entity)
             return entity

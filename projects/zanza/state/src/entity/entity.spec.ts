@@ -151,4 +151,13 @@ describe("Entity", () => {
         expect(user.tags[1].id).toEqual(101)
         expect(user.tags[1].value).toEqual("tag 101")
     })
+
+    it("dot in name", () => {
+        const User = Entity.extend("user.User", {
+            id: { primary: true, map: Number }
+        })
+
+        expect(User.name).toEqual("User")
+        expect(getEntityTypeName(User)).toEqual("user.User")
+    })
 })

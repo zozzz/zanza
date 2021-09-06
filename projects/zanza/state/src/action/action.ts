@@ -1,56 +1,86 @@
 // tslint:disable:max-line-length
-import { Injectable } from "@angular/core"
+import { Inject, Injectable, InjectionToken, Injector, Optional } from "@angular/core"
 import { Observable } from "rxjs"
 
-import { Storage } from "../storage"
-import { Link } from "../link"
+import type { EntityOptions, OptionsForEntity } from "../entity"
+import { EntityOptionsManager } from "../entity"
 import { ActionRunner } from "./runner"
 
 
-type EntityActionExec = (link: Link, storage: Storage) => Observable<any>
+type EntityActionExec = (options: EntityOptionsManager) => Observable<any>
 
 
-const LINK = Symbol("EntityAction.link")
-const STORAGE = Symbol("EntityAction.storage")
+const OPTIONS = Symbol("EntityAction.options")
+
+/**
+ * @example
+ * ```
+ * @NgModule({
+ *     provides: [
+ *         {
+ *             provide: DEFAULT_ENTITY_OPTIONS,
+ *             useValue: {storage: new MemoryStorage()},
+ *             multi: true
+ *         },
+ *         EntityActions
+ *     ]
+ * })
+ * export class Application {}
+ * ```
+ */
+export const DEFAULT_ENTITY_OPTIONS = new InjectionToken<EntityOptions>("DEFAULT_ENTITY_OPTIONS")
+
+
+/**
+ * @example
+ * ```
+ * @Component({
+ *     provides: [
+ *         {
+ *             provide: ENTITY_OPTIONS,
+ *             useValue: {entity: User, options: {storage: new IndexedDbStorage("dbname")}},
+ *             multi: true
+ *         },
+ *         EntityActions
+ *     ]
+ * })
+ * export class SomeComponent {}
+ * ```
+ */
+export const ENTITY_OPTIONS = new InjectionToken<OptionsForEntity>("ENTITY_OPTIONS")
 
 
 export class EntityAction<F extends EntityActionExec = EntityActionExec> {
     readonly #executor: F
 
-    [LINK]: Link
-    [STORAGE]: Storage
+    [OPTIONS]: EntityOptionsManager
 
     constructor(readonly id: any, executor: F) {
         this.#executor = executor
     }
 
     do(): ReturnType<F> {
-        return this.#executor(this[LINK], this[STORAGE]) as any
+        return this.#executor(this[OPTIONS]) as any
     }
 }
 
 
 @Injectable()
 export class EntityActions {
-    constructor(
-        private readonly runner: ActionRunner,
-        private readonly link: Link,
-        private readonly storage: Storage) {
+    readonly #options: EntityOptionsManager
 
+    constructor(
+        injector: Injector,
+        private readonly runner: ActionRunner,
+        @Inject(DEFAULT_ENTITY_OPTIONS) @Optional() defaultOptions: EntityOptions[],
+        @Inject(ENTITY_OPTIONS) @Optional() entityOptions: OptionsForEntity[]) {
+
+        this.#options = new EntityOptionsManager(injector, defaultOptions, entityOptions)
     }
 
-    // TODO: multiple actions
     do<A extends EntityAction, R extends Observable<unknown> = ReturnType<A["do"]>>(action: A): R {
-        action[LINK] = this.link
-        action[STORAGE] = this.storage
+        action[OPTIONS] = this.#options
         return this.runner.do(action)
-
-
-        // return new Observable(subscriber => {
-        //     const s = action[ACTION_RESULT].subscribe(subscriber)
-        //     this.runner.run(action)
-        //     return s.unsubscribe.bind(s)
-        // })
     }
 
     on<L extends (stream: any) => Observable<any>>(listener: L): ReturnType<L> {

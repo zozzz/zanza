@@ -3,7 +3,10 @@ import { EntityAction } from "./action"
 
 
 export function load<T extends Entity>(entityType: EntityType<T>, pk: EntityPk) {
-    return new EntityAction(load, (link, storage) => {
+    return new EntityAction(load, (options) => {
+        const link = options.getLink(entityType)
+        const storage = options.getStorage(entityType)
+
         return link.load(entityType, pk)
             .success(result => {
                 if (result != null) {

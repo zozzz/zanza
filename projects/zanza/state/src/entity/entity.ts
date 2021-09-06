@@ -1,16 +1,11 @@
 // tslint:disable:max-line-length
 
-import { isSubclass, getClassProtoChain, createOption } from "@zanza/common"
-import type { Link } from "../link"
-import type { Storage } from "../storage"
+import { isSubclass, getClassProtoChain, createOption, InhertableOptions } from "@zanza/common"
+import type { EntityOptions } from "./options"
 
 
 export type EntityPk = string
-
-export interface EntityOptions {
-    link?: typeof Link
-    storage?: typeof Storage
-}
+export type EntityTypeId = symbol
 
 // tslint:disable-next-line:ban-types
 export type EntityFunctionNames<E extends Entity> = { [P in keyof E]: E[P] extends Function ? P extends symbol ? never : P : never }[keyof E]
@@ -219,7 +214,7 @@ export class Entity {
         F extends Fields,
         O extends EntityOptions>(this: EntityType<E>, name: string, fields: F, options?: O): EntityClass<E, F, O> {
 
-        const cls = newCls(name, this)
+        const cls = newCls(name.split(/\./g).pop() as any, this)
         const normFields = normalizeFieldsDef(fields)
         const allFields: NormalizedFields = (this as any)[FIELDS].concat(normFields)
 
@@ -270,7 +265,7 @@ export class Entity {
         return value instanceof Entity ? value : new this(value)
     }
 
-    static [ID]: symbol
+    static [ID]: EntityTypeId
     static [OPTIONS] = createOption()
     static [FIELDS]: NormalizedFields = [];
 
@@ -325,7 +320,7 @@ export function getEntityType<T extends Entity>(entity: T | EntityType<T>): Enti
 }
 
 
-export function getEntityTypeId<T extends Entity>(entity: T | EntityType<T>): symbol {
+export function getEntityTypeId<T extends Entity>(entity: T | EntityType<T>): EntityTypeId {
     return (getEntityType(entity) as any)[ID]
 }
 
@@ -337,6 +332,11 @@ export function getEntityTypeName<T extends Entity>(entity: T | EntityType<T>): 
 
 export function getEntityTypeFields<T extends Entity>(entity: T | EntityType<T>): NormalizedFields {
     return (getEntityType(entity) as any)[FIELDS]
+}
+
+
+export function getEntityTypeOptions<T extends Entity>(entity: T | EntityType<T>): EntityOptions & InhertableOptions {
+    return (getEntityType(entity) as any)[OPTIONS]
 }
 
 
